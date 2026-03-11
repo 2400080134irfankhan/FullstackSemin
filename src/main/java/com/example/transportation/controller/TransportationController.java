@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transportations")
+@CrossOrigin(origins = "*")
 public class TransportationController {
 
     private final TransportationService service;
@@ -18,20 +19,17 @@ public class TransportationController {
         this.service = service;
     }
 
-    // POST /transportations → Create a new record
     @PostMapping
     public ResponseEntity<Transportation> create(@RequestBody Transportation transportation) {
         Transportation saved = service.create(transportation);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
-    // GET /transportations → Get all records
     @GetMapping
     public List<Transportation> getAll() {
         return service.getAll();
     }
 
-    // GET /transportations/{id} → Get a record by ID
     @GetMapping("/{id}")
     public ResponseEntity<Transportation> getById(@PathVariable Long id) {
         return service.getById(id)
@@ -39,10 +37,19 @@ public class TransportationController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE /transportations/{id} → Delete a record
+    @PutMapping("/{id}")
+    public ResponseEntity<Transportation> update(@PathVariable Long id,
+                                                  @RequestBody Transportation transportation) {
+        return service.update(id, transportation)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+        if (service.delete(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

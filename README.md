@@ -16,8 +16,12 @@ transportation-api/
     └── main/
         ├── java/com/example/transportation/
         │   ├── TransportationApplication.java      ← Main class
+        │   ├── config/
+        │   │   └── WebConfig.java                    ← CORS configuration
         │   ├── controller/
         │   │   └── TransportationController.java    ← REST endpoints
+        │   ├── exception/
+        │   │   └── GlobalExceptionHandler.java       ← Error handling
         │   ├── service/
         │   │   └── TransportationService.java       ← Business logic
         │   ├── repository/
@@ -50,6 +54,7 @@ The server starts at **http://localhost:8080**
 | POST   | `/transportations`         | Create a record      |
 | GET    | `/transportations`         | Get all records      |
 | GET    | `/transportations/{id}`    | Get a record by ID   |
+| PUT    | `/transportations/{id}`    | Update a record      |
 | DELETE | `/transportations/{id}`    | Delete a record      |
 
 ---
@@ -66,6 +71,12 @@ Body:
 ```json
 {
   "name": "City Bus",
+  "type": "Bus",
+  "origin": "Downtown",
+  "destination": "Airport",
+  "status": "Active",
+  "capacity": 50,
+  "price": 25.50,
   "date": "2026-03-11"
 }
 ```
@@ -74,7 +85,7 @@ cURL:
 ```bash
 curl -X POST http://localhost:8080/transportations \
   -H "Content-Type: application/json" \
-  -d '{"name": "City Bus", "date": "2026-03-11"}'
+  -d '{"name": "City Bus", "type": "Bus", "origin": "Downtown", "destination": "Airport", "status": "Active", "capacity": 50, "price": 25.50, "date": "2026-03-11"}'
 ```
 
 ---
@@ -101,7 +112,36 @@ curl http://localhost:8080/transportations/1
 
 ---
 
-### 4. Delete a Record
+### 4. Update a Record
+
+**PUT** `http://localhost:8080/transportations/1`
+
+Headers: `Content-Type: application/json`
+
+Body:
+```json
+{
+  "name": "Express Bus",
+  "type": "Bus",
+  "origin": "Downtown",
+  "destination": "University",
+  "status": "Active",
+  "capacity": 60,
+  "price": 30.00,
+  "date": "2026-03-15"
+}
+```
+
+cURL:
+```bash
+curl -X PUT http://localhost:8080/transportations/1 \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Express Bus", "type": "Bus", "origin": "Downtown", "destination": "University", "status": "Active", "capacity": 60, "price": 30.00, "date": "2026-03-15"}'
+```
+
+---
+
+### 5. Delete a Record
 
 **DELETE** `http://localhost:8080/transportations/1`
 
